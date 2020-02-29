@@ -1,0 +1,20 @@
+
+var experimentalData = [true, false, true, true, false, false, false, true, false, true, true, false, false, true, true, true, true, false, false, false, false, true, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, true, false, true, true, false, false, true, true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, false, false, false, true, false, false, true, false, true, false, false, false, false, false, true, false, false, false, false, true, false];
+
+var survey = function(){
+	var theta = beta({a: 1, b: 1});
+	var coin = flip();
+	var result = coin ?
+		Bernoulli({p: theta}) :
+		Bernoulli({p: .5});
+	map(function(d){ observe(result, d) }, experimentalData)
+	return theta
+}
+
+
+var thetaPosterior = Infer({
+    method: 'MCMC',
+    model: survey
+});
+
+display(expectation(thetaPosterior))
