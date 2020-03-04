@@ -1,20 +1,25 @@
-
-var experimentalData = [true, false, true, true, false, false, false, true, false, true, true, false, false, true, true, true, true, false, false, false, false, true, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, true, false, true, true, false, false, true, true, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, false, false, false, true, false, false, true, false, true, false, false, false, false, false, true, false, false, false, false, true, false];
+var experimentalData = [false, true, false, false, false, true, false, false, true, false, false, false, false, false, true, true, true, true, true, false, false, false, true, false, false, false, true, true, false, true, true, false, true, false, true, false, false, true, false, false, false, true, true, false, false, true, true, false, true, false, true, false, false, false, false, false, true, true, false, true, true, true, true, true, false, false, true, false, false, true, false, true, false, true, false, false, false, true, false, false, true, true, false, false, false, true, true, false, true, true, true, true, true, false, false, false, true, true, false, true, true, true, false, true, false, true, true, true, false, true, true, true, true, true, false, false, true, true, false, true, false, true, false, false, true, true, true, true, true, false, false, false, true, false, false, true, false, true, true, false, true, true, true, false, false, true, true, false, false, false, false, true, false, true, true, false, true, false, true, true, true, false, true, true, false, true, false, false, false, true, true, true, true, true, true, false, true, true, false, true, true, false, true, true, true, false, true, false, false, true, false, true, false, false, true, false, true, false, true, false]
 
 var survey = function(){
+	// prior distribution
 	var theta = beta({a: 1, b: 1});
-	var coin = flip();
-	var result = coin ?
-		Bernoulli({p: theta}) :
-		Bernoulli({p: .5});
-	map(function(d){ observe(result, d) }, experimentalData)
+	map(function(d){ 
+		var coin = flip();
+		// mixture model with theta and 0.5 according to coin
+		var dist = coin ?
+			Bernoulli({p: theta}) :
+			Bernoulli({p: 0.5})
+		factor(dist.score(d))
+	}, experimentalData)
 	return theta
 }
 
 
 var thetaPosterior = Infer({
     method: 'MCMC',
-    model: survey
+    model: survey,
+	burn: 10000,
+	samples: 10000,
 });
 
 display(expectation(thetaPosterior))
