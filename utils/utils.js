@@ -1,190 +1,38 @@
-const csv = require('csv-parser');
 const fs = require('fs');
 
+function fromFileToList(path){
+  var text = fs.readFileSync(path);
+  var string = text.toString('utf-8')
+  var textByLine = string.split("\n")
+  return textByLine;
+}
+
+function readFileAsBooleans(path){
+  list = fromFileToList(path);
+  return list.map(str => str.toLowerCase() == 'true\r' ? true : false)
+}
+
+function readFileAsFloats(path){
+  list = fromFileToList(path);
+  return list.map(str => parseFloat(str));
+}
 
 module.exports = 
 {
     getGmmData: function()
     {
-        var dataAsList = [];
-        fs.createReadStream('./resource/gmm_data.csv')
-        .pipe(csv())
-        .on('data', (row) => {
-          console.log(row);
-          dataAsList.push(row['-1.60564'])
-        })
-        .on('end', () => {
-          console.log('CSV file successfully processed ' + dataAsList);
-          return dataAsList;
-        });        
+        return readFileAsFloats("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/gmm_data.csv");       
     },
 
     getSurveyDataHalf: function () {
-      return [true,
-        false,
-        true,
-        true,
-        false,
-        false,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        true,
-        true,
-        false,
-        false,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true];
+      return readFileAsBooleans("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/survey_half_data.csv")
     },
 
     getSurveyDataOneThird: function(){
-      return [true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true];
+      return readFileAsBooleans("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/survey_one_third_data.csv");
     },
 
     getSurveyDataTwoThird: function(){
-      return [true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        true];
+      return readFileAsBooleans("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/survey_two_third_data.csv")
     }
 };
