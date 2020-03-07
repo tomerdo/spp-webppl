@@ -1,25 +1,31 @@
-var experimentalData = utils.getSurveyData();
+var experimentalData = utils.getGmmData();
 
-var survey = function(){
-	// prior distribution
-	var theta = beta({a: 1, b: 1});
+var gmm = function(){
+	var mean_1 = gaussian({mu: 0, sigma: 10});
+	var variance_1 = logNormal({mu: 0, sigma: 10})
+	var mean_2 = gaussian({mu: 0, sigma: 10});
+	var variance_2 = logNormal({mu: 0, sigma: 10})
+	
+	condition(variance_1 > 0);
+	condition(variance_2 > 0);
+
 	map(function(d){ 
 		var coin = flip();
-		// mixture model with theta and 0.5 according to coin
+
 		var dist = coin ?
-			Bernoulli({p: theta}) :
-			Bernoulli({p: 0.5})
-		factor(dist.score(d))
+			Gaussian({mu: mean_1, sigma: variance_1}) :
+			Gaussian({mu: mean_2, sigma: variance_2})
+		observe(dist, d);
 	}, experimentalData)
-	return theta
+	return mean_1;
 }
 
 
-var thetaPosterior = Infer({
+var meanPosterior = Infer({
     method: 'MCMC',
-    model: survey,
+    model: gmm,
 	burn: 10000,
 	samples: 10000,
 });
 
-display(expectation(thetaPosterior))
+display(expectation(meanPosterior))
