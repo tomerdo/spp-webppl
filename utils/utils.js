@@ -34,5 +34,8 @@ module.exports =
 
     getSurveyDataTwoThird: function(){
       return readFileAsBooleans("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/survey_two_third_data.csv")
+    },
+    getHmmData: function(){
+      return readFileAsFloats("C:/Users/Tomer/nodejs/webppl/workspace/webppl/resource/hmm_data.csv")
     }
 };

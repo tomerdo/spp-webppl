@@ -2,7 +2,9 @@
     "name": "spp",
     "version": "1.0.0",
     "dependencies": {
+        "canvas": "^2.6.1",
         "csvtojson": "^2.0.10",
-        "utils": "file:utils"
+        "utils": "file:utils",
+        "webppl-viz": "github:probmods/webppl-viz"
     }
 }

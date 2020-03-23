@@ -22,4 +22,4 @@ var thetaPosterior = Infer({
 	samples: 10000,
 });
 
-display(expectation(thetaPosterior))
+display(expectation(thetaPosterior));

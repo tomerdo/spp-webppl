@@ -6,8 +6,7 @@ var gmm = function(){
 	var variance_1 = logNormal({mu: 0, sigma: 10})
 	var mean_2 = gaussian({mu: 0, sigma: 10});
 	var variance_2 = logNormal({mu: 0, sigma: 10})
-	
-	
+		
 	map(function(d){ 
 		var coin = flip();	
 		var dist = coin ?
@@ -27,10 +26,10 @@ var gmm = function(){
 
 
 var meanPosterior = Infer({
-    method: 'MCMC',
-    model: gmm,
-	burn: 10000,
-	samples: 10000,
+    method: 'incrementalMH',
+	model: gmm,
+	burn: 1000,
+	samples: 5000,
 });
 
 display(query);
