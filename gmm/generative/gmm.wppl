@@ -1,0 +1,34 @@
+var experimentalData = utils.getGmmData();
+
+var gmm = function(){
+	var mean_1 = gaussian({mu: 0, sigma: 10});
+	var variance_1 = logNormal({mu: 0, sigma: 10})
+	var mean_2 = gaussian({mu: 0, sigma: 10});
+	var variance_2 = logNormal({mu: 0, sigma: 10})
+		
+	map(function(d){ 
+		var coin = flip();	
+		var dist = coin ?
+			Gaussian({mu: mean_1, sigma: variance_1}) :
+			Gaussian({mu: mean_2, sigma: variance_2})
+		observe(dist, d);
+		
+	}, experimentalData);
+
+	query.add("mean_1" , mean_1);
+	query.add("mean_2" , mean_2);
+	query.add("variance_1" , variance_1);
+	query.add("variance_2" , variance_2);
+	
+	return query;// mean1 ,mean_2 , variance_1 , variance_2];
+}
+
+
+var meanPosterior = Infer({
+    method: 'MCMC',
+	model: gmm,
+	burn: 1000,
+	samples: 5000,
+});
+
+display(query);

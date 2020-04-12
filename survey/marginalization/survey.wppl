@@ -9,10 +9,7 @@ var survey = function(experimentalData){
 		map(function(d){ 
 			var coin = flip();
 			// mixture model with theta and 0.5 according to coin
-			var dist = coin ?
-				Bernoulli({p: theta}) :
-				Bernoulli({p: 0.5})
-			observe(dist,d);
+			factor(0.5 * Bernoulli({p: theta}).score(d) + 0.5 * Bernoulli({p: 0.5}).score(d))
 		}, experimentalData)
 		return theta
 	}
@@ -24,22 +21,25 @@ var surveyWithOneThird = survey(experimentalDataOneThird);
 var surveyWithTwoThird = survey(experimentalDataTwoThird);
 
 var thetaHalfPosterior = Infer({
-    method: 'MCMC',
-    model: surveyWithHalf,
+	method: 'MCMC',
+	// kernel: 'HMC',
+	model: surveyWithHalf,
 	burn: 10000,
 	samples: 10000,
 });
 
 var thetaOneThirdPosterior = Infer({
     method: 'MCMC',
-    model: surveyWithOneThird,
+	// kernel: 'HMC',
+	model: surveyWithOneThird,
 	burn: 10000,
 	samples: 10000,
 });
 
 var thetaTwoThirdPosterior = Infer({
-    method: 'MCMC',
-    model: surveyWithTwoThird,
+	method: 'MCMC',
+	// kernel: 'HMC',
+	model: surveyWithTwoThird,
 	burn: 10000,
 	samples: 10000,
 });

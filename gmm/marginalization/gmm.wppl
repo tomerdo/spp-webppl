@@ -1,5 +1,4 @@
 var experimentalData = utils.getGmmData();
-// display(experimentalData);
 
 var gmm = function(){
 	var mean_1 = gaussian({mu: 0, sigma: 10});
@@ -7,12 +6,11 @@ var gmm = function(){
 	var mean_2 = gaussian({mu: 0, sigma: 10});
 	var variance_2 = logNormal({mu: 0, sigma: 10})
 		
-	map(function(d){ 
-		var coin = flip();	
-		var dist = coin ?
-			Gaussian({mu: mean_1, sigma: variance_1}) :
-			Gaussian({mu: mean_2, sigma: variance_2})
-		observe(dist, d);
+	map(function(d){ 	
+		factor(
+			0.5 * Gaussian({mu: mean_1, sigma: variance_1}).score(d) +
+			0.5 * Gaussian({mu: mean_2, sigma: variance_2}).score(d)
+		 );
 		
 	}, experimentalData);
 
@@ -26,7 +24,7 @@ var gmm = function(){
 
 
 var meanPosterior = Infer({
-    method: 'incrementalMH',
+    method: 'MCMC',
 	model: gmm,
 	burn: 1000,
 	samples: 5000,

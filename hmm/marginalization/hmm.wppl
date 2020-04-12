@@ -1,0 +1,25 @@
+var observations = utils.getHmmData()
+
+var initDist = Discrete({ps: [1.0, 1.0, 1.0]})
+
+var theta = [Discrete({ps: [0.1, 0.5, 0.4]}),
+                   Discrete({ps: [0.2, 0.2, 0.6]}),
+                   Discrete({ps: [0.15, 0.15, 0.7]})]
+
+var phi = [Gaussian({mu: -1, sigma: 1}),
+                 Gaussian({mu: 1, sigma: 1}),
+                 Gaussian({mu: 0, sigma: 1})]
+
+var model = function() {
+    return reduce(
+            function(obs, states) {
+                var state = sample(theta[last(states)]);
+                factor(phi[state].score(obs));
+                states.concat([state]);
+            },
+            [sample(initDist)],
+            observations)
+}
+
+Infer({model, method: 'MCMC', samples: 10000, burn: 100000})
+
