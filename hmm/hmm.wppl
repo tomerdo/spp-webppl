@@ -15,7 +15,6 @@ var model = function() {
             function(obs, states) {
                 var state = sample(theta[last(states)]);
                 factor(phi[state].score(obs));
-                query.add("state " + obs , state);
                 states.concat([state]);
             },
             [sample(initDist)],

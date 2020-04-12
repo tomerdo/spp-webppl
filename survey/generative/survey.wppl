@@ -1,0 +1,49 @@
+var experimentalDataHalf = utils.getSurveyDataHalf();
+var experimentalDataOneThird = utils.getSurveyDataOneThird();
+var experimentalDataTwoThird = utils.getSurveyDataTwoThird();
+
+var survey = function(experimentalData){
+	var model = function(){
+		// prior distribution
+		var theta = beta({a: 1, b: 1});
+		map(function(d){ 
+			var coin = flip();
+			// mixture model with theta and 0.5 according to coin
+			var dist = coin ?
+				Bernoulli({p: theta}) :
+				Bernoulli({p: 0.5})
+			observe(dist,d);
+		}, experimentalData)
+		return theta
+	}
+	return model;
+}
+
+var surveyWithHalf = survey(experimentalDataHalf);
+var surveyWithOneThird = survey(experimentalDataOneThird);
+var surveyWithTwoThird = survey(experimentalDataTwoThird);
+
+var thetaHalfPosterior = Infer({
+    method: 'MCMC',
+    model: surveyWithHalf,
+	burn: 10000,
+	samples: 10000,
+});
+
+var thetaOneThirdPosterior = Infer({
+    method: 'MCMC',
+    model: surveyWithOneThird,
+	burn: 10000,
+	samples: 10000,
+});
+
+var thetaTwoThirdPosterior = Infer({
+    method: 'MCMC',
+    model: surveyWithTwoThird,
+	burn: 10000,
+	samples: 10000,
+});
+
+display(expectation(thetaHalfPosterior));
+display(expectation(thetaOneThirdPosterior));
+display(expectation(thetaTwoThirdPosterior));
